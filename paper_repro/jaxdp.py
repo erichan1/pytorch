@@ -16,7 +16,7 @@ from jax.experimental import optimizers, stax
 from jax.tree_util import tree_flatten, tree_multimap, tree_unflatten
 from keras.utils.np_utils import to_categorical
 
-from paper_repro.jax_resnet_impl import ResNet18
+from jax_resnet_impl import ResNet18
 
 import data
 import util as utils
@@ -122,6 +122,9 @@ def main(args):
 
     dummy = jnp.array(1.)
 
+    print("Start trace!")
+    jax.profiler.start_trace("/tmp/tensorboard")
+
     timings = []
     for epoch in range(1, args.epochs + 1):
         start = time.perf_counter()
@@ -139,6 +142,8 @@ def main(args):
         timings.append(duration)
 
     print(timings)
+
+    jax.profiler.stop_trace()
 
 if __name__ == '__main__':
     parser = utils.get_parser()
